@@ -55,7 +55,7 @@ Ajustes que só existem no dashboard (**Authentication**):
 - Build command: `npm run build`
 - Output directory: `dist/spa`
 - Variáveis (Production e Preview): `QCLI_SUPABASE_URL`, `QCLI_SUPABASE_KEY`,
-  `QCLI_SITE_URL=https://metodo-vic.pages.dev` e `NODE_VERSION=22`. As `QCLI_` entram no bundle na hora do
+  `QCLI_SITE_URL=https://metodo-vic.pages.dev` e `NODE_VERSION=24` (o `.node-version` do projeto também fixa o 24). As `QCLI_` entram no bundle na hora do
   build: mudou alguma, faça um novo deploy.
 - `public/_redirects` manda toda rota para o `index.html` (rotas em modo
   history) e `public/_headers` aplica os cabeçalhos de segurança. A CSP do

@@ -43,7 +43,11 @@
     "postcss": "^8.5.8"
   },
   "engines": {
-    "node": ">= 26 || ^24 || ^22.12"
+    "node": "^24 || ^22.22.0",
+    "npm": ">= 10"
   },
-  "productName": "Metodo VIC"
+  "productName": "Metodo VIC",
+  "overrides": {
+    "esbuild": "^0.28.0"
+  }
 }
