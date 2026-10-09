@@ -22,7 +22,12 @@
     "postinstall": "quasar prepare --silent"
   },
   "dependencies": {
+    "@fontsource-variable/archivo": "^5.3.0",
+    "@fontsource/anton": "^5.3.0",
+    "@fontsource/inter": "^5.3.0",
     "@quasar/extras": "^2.1.0",
+    "@supabase/supabase-js": "^2.117.3",
+    "jspdf": "^4.2.1",
     "pinia": "^4.0.2",
     "quasar": "^2.35.0",
     "vue": "^3.5.22",

@@ -1,22 +1,14 @@
 import { defineRouter } from '#q-app'
-import { routes, handleHotUpdate } from 'vue-router/auto-routes'
 import {
   createMemoryHistory,
   createRouter,
   createWebHashHistory,
   createWebHistory
 } from 'vue-router'
+import routes from './routes'
+import { useAuthStore } from '@/stores/auth.js'
 
-/*
- * If not building with SSR mode, you can
- * directly export the Router instantiation;
- *
- * The function below can be async too; either use
- * async/await or return a Promise which resolves
- * with the Router instance.
- */
-
-export default defineRouter((/* { store, ssrContext } */) => {
+export default defineRouter(({ store }) => {
   const createHistory = import.meta.env.QUASAR_SERVER
     ? createMemoryHistory
     : import.meta.env.QUASAR_VUE_ROUTER_MODE === 'history'
@@ -33,10 +25,27 @@ export default defineRouter((/* { store, ssrContext } */) => {
     history: createHistory(import.meta.env.QUASAR_VUE_ROUTER_BASE)
   })
 
-  // enable HMR for it
-  if (import.meta.hot) {
-    handleHotUpdate(Router)
-  }
+  /**
+   * Guardas do painel. O RLS é quem protege os dados de verdade; aqui é só
+   * para ninguém cair numa tela que não vai carregar nada.
+   */
+  Router.beforeEach(async to => {
+    const precisaLogin = to.matched.some(r => r.meta.login)
+    const soDeslogado = to.matched.some(r => r.meta.soDeslogado)
+    if (!precisaLogin && !soDeslogado) return true
+
+    const auth = useAuthStore(store)
+    await auth.pronto()
+
+    if (precisaLogin && !auth.logado) {
+      return { path: '/entrar', query: { para: to.fullPath } }
+    }
+    if (soDeslogado && auth.logado) return { path: '/painel' }
+    if (to.matched.some(r => r.meta.admin) && !auth.ehAdmin) {
+      return { path: '/painel' }
+    }
+    return true
+  })
 
   return Router
 })

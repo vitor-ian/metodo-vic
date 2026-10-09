@@ -1,1 +1,369 @@
-// app global css
+// Método VIC — estilos globais
+// Tokens, tipografia e botões copiados do site do Max (max-visual) para o
+// sistema falar a mesma língua visual do Método VIC.
+// Fonts are imported in src/boot/fonts.js (self-hosted @fontsource).
+// Theme model: LIGHT is the default (white sections). Highlight sections opt
+// into dark by adding the `.mv-dark` class, which overrides the token set.
+
+:root {
+  // ---- Light theme (default) ----
+  --mv-bg: #ffffff;
+  --mv-bg-alt: #f5f6f8;
+  --mv-ink: #0b0c0e;
+  --mv-muted: #4b5158; // ~8:1 on white
+  --mv-faint: #868d95;
+  --mv-surface: #f6f7f9;
+  --mv-surface-2: #eceef1;
+  --mv-line: rgba(0, 0, 0, 0.09);
+  --mv-line-strong: rgba(0, 0, 0, 0.16);
+
+  // Brand accent: a single wine used site-wide. Tuned so it reads on both
+  // white and black (relative luminance ~0.16 -> ~5:1 on white, ~4.2:1 on black).
+  --mv-hl: #c43c58;
+  --mv-green: #c43c58; // accent / button bg
+  --mv-green-bright: #d4526c;
+  --mv-green-deep: #a42e46;
+  --mv-green-glow: rgba(196, 60, 88, 0.26);
+  --mv-accent-tint: rgba(196, 60, 88, 0.1);
+  --mv-cta-ink: #ffffff;
+
+  // Type
+  --font-display: 'Anton', 'Archivo Variable', sans-serif;
+  --font-heavy: 'Archivo Variable', 'Inter', sans-serif;
+  --font-body:
+    'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  --mv-shadow: 0 24px 60px -24px rgba(0, 0, 0, 0.22);
+  --mv-radius: 18px;
+
+  --z-sticky: 100;
+  --z-nav: 200;
+}
+
+// ---- Dark theme (highlight sections) ----
+.mv-dark {
+  --mv-bg: #0a0a0a;
+  --mv-bg-alt: #0f1113;
+  --mv-ink: #f4f5f6;
+  --mv-muted: #a7adb4;
+  --mv-faint: #71767c;
+  --mv-surface: #14171a;
+  --mv-surface-2: #1b1f23;
+  --mv-line: rgba(255, 255, 255, 0.08);
+  --mv-line-strong: rgba(255, 255, 255, 0.16);
+
+  // Same wine on dark; only the glow/tint alpha lift for the black backdrop.
+  --mv-hl: #c43c58;
+  --mv-green: #c43c58;
+  --mv-green-bright: #d4526c;
+  --mv-green-deep: #a42e46;
+  --mv-green-glow: rgba(196, 60, 88, 0.42);
+  --mv-accent-tint: rgba(196, 60, 88, 0.18);
+  --mv-cta-ink: #ffffff;
+  --mv-shadow: 0 24px 60px -20px rgba(0, 0, 0, 0.75);
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 72px;
+  background: var(--mv-bg);
+  // Belt to the body clip below: `clip` contains stray horizontal overflow
+  // (reveal transforms, decorative glows) without creating a scroll container,
+  // so `position: sticky` keeps working.
+  overflow-x: clip;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--mv-bg);
+  color: var(--mv-ink);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  letter-spacing: -0.005em;
+  // Slide-in reveals translate elements off-axis; clip so they never
+  // create a horizontal scrollbar (notably on mobile).
+  overflow-x: clip;
+}
+
+// Section theme wrappers paint their own surface.
+.mv-dark,
+.mv-light {
+  background: var(--mv-bg);
+  color: var(--mv-ink);
+}
+
+// ---------- Typography ----------
+.mv-kicker {
+  font-family: var(--font-heavy);
+  font-weight: 700;
+  font-size: 0.78rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--mv-hl);
+}
+
+.mv-display {
+  font-family: var(--font-display);
+  font-weight: 400;
+  line-height: 0.98;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  text-wrap: balance;
+  color: var(--mv-ink);
+}
+
+.mv-h1 {
+  font-size: clamp(2.4rem, 7vw, 5rem);
+}
+.mv-h2 {
+  font-size: clamp(1.9rem, 5vw, 3.4rem);
+}
+.mv-h3 {
+  font-size: clamp(1.4rem, 3.4vw, 2.1rem);
+}
+
+.mv-hl,
+.hl {
+  color: var(--mv-hl);
+}
+
+.mv-lead {
+  font-size: clamp(1.05rem, 2.1vw, 1.35rem);
+  line-height: 1.55;
+  color: var(--mv-muted);
+  max-width: 60ch;
+}
+
+.mv-body {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: var(--mv-muted);
+  max-width: 68ch;
+}
+
+// ---------- Layout ----------
+.mv-section {
+  padding-block: clamp(4rem, 9vw, 7.5rem);
+  position: relative;
+  background: var(--mv-bg);
+  color: var(--mv-ink);
+}
+
+.mv-container {
+  width: 100%;
+  max-width: 1160px;
+  margin-inline: auto;
+  padding-inline: clamp(1.25rem, 5vw, 2.5rem);
+}
+
+.mv-container--narrow {
+  max-width: 820px;
+}
+
+// ---------- Buttons ----------
+.mv-cta {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  font-family: var(--font-heavy);
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--mv-cta-ink);
+  background: var(--mv-green);
+  border-radius: 999px;
+  padding: 1.05rem 2rem;
+  font-size: clamp(0.95rem, 1.6vw, 1.1rem);
+  box-shadow: 0 12px 30px -8px var(--mv-green-glow);
+  transition:
+    transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.3s ease,
+    background 0.3s ease;
+
+  .q-btn__content {
+    gap: 0.6rem;
+    // Keep the trailing icon beside the label: a long label wraps inside its
+    // own span instead of pushing the icon onto a line of its own.
+    flex-wrap: nowrap;
+  }
+
+  // Icon glides forward on hover.
+  .q-icon {
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+}
+
+// Light sweep that crosses the button on hover.
+.mv-cta::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    120deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.28) 48%,
+    transparent 66%
+  );
+  transform: translateX(-130%);
+  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.mv-cta:hover {
+  background: var(--mv-green-bright);
+  box-shadow: 0 20px 48px -8px var(--mv-green-glow);
+  transform: translateY(-3px);
+}
+.mv-cta:hover::before {
+  transform: translateX(130%);
+}
+.mv-cta:hover .q-icon {
+  transform: translateX(5px);
+}
+.mv-cta:active {
+  transform: translateY(-1px) scale(0.99);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mv-cta,
+  .mv-cta::before,
+  .mv-cta .q-icon {
+    transition: none;
+  }
+  .mv-cta:hover {
+    transform: none;
+  }
+}
+
+.mv-cta--ghost {
+  color: var(--mv-ink);
+  background: transparent;
+  border: 1px solid var(--mv-line-strong);
+  box-shadow: none;
+}
+.mv-cta--ghost:hover {
+  background: var(--mv-surface-2);
+  border-color: var(--mv-green);
+  box-shadow: none;
+}
+
+// ---------- Cards / surfaces ----------
+.mv-card {
+  background: var(--mv-surface);
+  border: 1px solid var(--mv-line);
+  border-radius: var(--mv-radius);
+  transition:
+    border-color 0.3s ease,
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.3s ease;
+}
+.mv-card:hover {
+  border-color: var(--mv-green);
+  transform: translateY(-5px);
+  box-shadow: var(--mv-shadow);
+}
+
+// ---------- Painel ----------
+// O painel é uma ferramenta de trabalho: fundo claro, superfícies discretas,
+// o vinho só onde há ação ou estado.
+.pn-page {
+  padding: clamp(1.25rem, 3vw, 2.25rem) clamp(1rem, 3vw, 2.5rem) 3rem;
+  max-width: 1280px;
+  margin-inline: auto;
+}
+.pn-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.pn-title {
+  margin: 0.25rem 0 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(1.6rem, 3.4vw, 2.3rem);
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--mv-ink);
+}
+.pn-sub {
+  margin: 0.4rem 0 0;
+  color: var(--mv-muted);
+  font-size: 0.95rem;
+}
+.pn-card {
+  background: var(--mv-bg);
+  border: 1px solid var(--mv-line);
+  border-radius: 14px;
+  padding: clamp(1rem, 2.4vw, 1.5rem);
+}
+.pn-card + .pn-card {
+  margin-top: 1rem;
+}
+.pn-card__title {
+  margin: 0 0 1rem;
+  font-family: var(--font-heavy);
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--mv-ink);
+}
+.pn-btn {
+  font-family: var(--font-heavy);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  border-radius: 10px;
+}
+
+// Selo de status do diagnóstico.
+.pn-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  font-family: var(--font-heavy);
+  font-weight: 700;
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  background: var(--mv-surface-2);
+  color: var(--mv-muted);
+}
+.pn-status::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.pn-status--novo {
+  background: var(--mv-accent-tint);
+  color: var(--mv-green-deep);
+}
+.pn-status--em_contato {
+  background: #fff4e0;
+  color: #9a5b00;
+}
+.pn-status--agendado {
+  background: #e7f0ff;
+  color: #1f4fa8;
+}
+.pn-status--concluido {
+  background: #e6f6ec;
+  color: #17703b;
+}
+
+// Campos do Quasar com o acento da marca.
+.q-field--outlined.q-field--focused .q-field__control:after {
+  border-color: var(--mv-hl);
+}
+.q-field--focused .q-field__label {
+  color: var(--mv-hl);
+}
+
+::selection {
+  background: var(--mv-green);
+  color: #ffffff;
+}

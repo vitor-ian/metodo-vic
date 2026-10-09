@@ -1,50 +1,30 @@
 <!doctype html>
-<html>
+<html lang="pt-BR">
   <head>
-    <title><%= productName %></title>
+    <title>Método VIC</title>
 
     <meta charset="utf-8" />
-    <meta name="description" content="<%= productDescription %>" />
+    <meta
+      name="description"
+      content="Diagnóstico visagista do Método VIC: escuta ativa, perfil comportamental, estilo desejado e fotos para a consultoria."
+    />
     <meta name="format-detection" content="telephone=no" />
+    <!-- Ferramenta de atendimento e painel: nada aqui é para busca. -->
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="theme-color" content="#0a0a0a" />
     <meta
       name="viewport"
       content="width=device-width, initial-scale=1<% if (ctx.mode.cordova || ctx.mode.capacitor) { %>, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover<% } %>"
     />
+    <!-- Supabase: API e storage (https) e realtime do auth (wss). As fotos
+         aparecem por link assinado do storage, ou como blob: na prévia local. -->
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline';<% if (ctx.dev) { %> connect-src 'self' ws://localhost:*; worker-src 'self' blob:;<% } %>"
+      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: blob: https://*.supabase.co; connect-src 'self' https://*.supabase.co wss://*.supabase.co<% if (ctx.dev) { %> ws://localhost:*<% } %>; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'"
     />
 
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="128x128"
-      href="icons/favicon-128x128.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="96x96"
-      href="icons/favicon-96x96.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="32x32"
-      href="icons/favicon-32x32.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="16x16"
-      href="icons/favicon-16x16.png"
-    />
-    <link rel="icon" type="image/ico" href="favicon.ico" />
-    <link
-      rel="apple-touch-icon"
-      sizes="180x180"
-      href="icons/apple-icon-180x180.png"
-    />
+    <link rel="icon" type="image/png" href="/icon.png" />
+    <link rel="apple-touch-icon" href="/icon.png" />
   </head>
   <body>
     <!-- quasar:entry-point -->

@@ -1,0 +1,16 @@
+# Cabeçalhos de segurança (Cloudflare Pages / Netlify).
+# A CSP daqui soma com a do <meta> no index.html: o navegador aplica as duas.
+# Esta fixa o projeto Supabase exato e acrescenta o que meta não suporta
+# (frame-ancestors). Trocou de projeto Supabase? Atualize o host abaixo.
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: blob: https://bfwzmkrdyngmmgiwbzcs.supabase.co; connect-src 'self' https://bfwzmkrdyngmmgiwbzcs.supabase.co wss://bfwzmkrdyngmmgiwbzcs.supabase.co; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  Permissions-Policy: camera=(self), microphone=(), geolocation=(), payment=(), usb=()
+  Cross-Origin-Opener-Policy: same-origin
+  X-Robots-Tag: noindex, nofollow
+
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable

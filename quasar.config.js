@@ -11,7 +11,7 @@ export default defineConfig(ctx => {
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://v2.quasar.dev/quasar-cli-vite/boot-files
-    boot: ['i18n'],
+    boot: ['fonts', 'i18n'],
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#css
     css: ['app.scss'],
@@ -25,8 +25,7 @@ export default defineConfig(ctx => {
       // 'themify',
       // 'line-awesome',
 
-      'roboto-font', // optional, you are not bound to it
-      'material-icons' // optional, you are not bound to it
+      'material-icons'
     ],
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#build
@@ -36,10 +35,13 @@ export default defineConfig(ctx => {
         // node: 'node22'
       },
 
-      // https://v2.quasar.dev/quasar-cli-vite/page-routing-with-vue-router#filename-based-routing
-      filenameBasedRouting: true,
+      // Rotas explícitas em src/router/routes.js: os guardas do painel (login,
+      // papel) ficam legíveis num lugar só.
+      filenameBasedRouting: false,
 
-      vueRouterMode: 'hash', // available values: 'hash', 'history'
+      // history: o link do barbeiro (/diagnostico/<slug>) precisa ser limpo.
+      // O public/_redirects devolve o index.html para qualquer rota.
+      vueRouterMode: 'history', // available values: 'hash', 'history'
       // vueRouterBase,
 
       // publicPath: '/',
@@ -80,7 +82,7 @@ export default defineConfig(ctx => {
     devServer: {
       // vueDevtools: true,
       // https: true,
-      open: true // opens browser window automatically
+      open: false
     },
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#framework
@@ -88,7 +90,7 @@ export default defineConfig(ctx => {
       config: {},
 
       // iconSet: 'material-icons', // Quasar icon set
-      // lang: 'en-US', // Quasar language pack
+      // lang: 'en-US', // (definido abaixo)
 
       // For special cases outside of where the auto-import strategy can have an impact
       // (like functional components as one of the examples),
@@ -97,8 +99,10 @@ export default defineConfig(ctx => {
       // components: [],
       // directives: [],
 
+      lang: 'pt-BR',
+
       // Quasar plugins
-      plugins: []
+      plugins: ['Notify', 'Dialog', 'Loading']
     },
 
     // animations: 'all', // --- includes all animations
