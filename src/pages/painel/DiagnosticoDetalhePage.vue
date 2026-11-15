@@ -187,6 +187,81 @@
             />
           </section>
 
+          <!-- Avaliação pós-atendimento: o pedido sai daqui, já ligado a
+               este cliente. -->
+          <section class="pn-card dd-aval">
+            <h2 class="pn-card__title">{{ $t('painel.aval.fichaTitulo') }}</h2>
+            <template v-if="avaliacao">
+              <div class="dd-aval__nota">
+                <EstrelasNota
+                  :model-value="avaliacao.nota"
+                  somente-leitura
+                  tamanho="20px"
+                />
+                <span v-if="avaliacao.nps !== null" class="dd-aval__nps">
+                  {{ $t('painel.aval.recomenda', { n: avaliacao.nps }) }}
+                </span>
+              </div>
+              <p v-if="avaliacao.comentario" class="dd-aval__com">
+                “{{ avaliacao.comentario }}”
+              </p>
+              <dl v-if="avaliacao.respostas?.length" class="dd-dados q-mt-sm">
+                <template v-for="r in avaliacao.respostas" :key="r.id">
+                  <dt>{{ r.texto }}</dt>
+                  <dd>
+                    <template v-if="r.tipo === 'nota'"
+                      >{{ r.resposta }}/5</template
+                    >
+                    <template v-else-if="r.tipo === 'sim_nao'">
+                      {{ r.resposta ? $t('aval.sim') : $t('aval.nao') }}
+                    </template>
+                    <template v-else>{{ r.resposta }}</template>
+                  </dd>
+                </template>
+              </dl>
+              <p class="dd-aval__quando">
+                {{
+                  $t('painel.aval.recebidaEm', {
+                    data: dataHora(avaliacao.criado_em)
+                  })
+                }}
+              </p>
+            </template>
+            <template v-else-if="linkAvaliacao">
+              <p class="pn-sub q-mt-none dd-aval__txt">
+                {{ $t('painel.aval.fichaPedir') }}
+              </p>
+              <div class="dd-aval__acoes">
+                <q-btn
+                  v-if="linkPedirAvaliacao"
+                  unelevated
+                  no-caps
+                  class="pn-btn dd-whats"
+                  :href="linkPedirAvaliacao"
+                  target="_blank"
+                  rel="noopener"
+                >
+                  <BrandIcon name="whatsapp" size="18px" />
+                  <span class="q-ml-sm">{{
+                    $t('painel.aval.pedirWhats')
+                  }}</span>
+                </q-btn>
+                <q-btn
+                  flat
+                  no-caps
+                  color="primary"
+                  class="pn-btn"
+                  icon="content_copy"
+                  :label="$t('painel.aval.copiarLinkCliente')"
+                  @click="copiarLinkAvaliacao"
+                />
+              </div>
+            </template>
+            <p v-else class="pn-sub q-mt-none">
+              {{ $t('painel.aval.fichaSemLink') }}
+            </p>
+          </section>
+
           <section class="pn-card">
             <h2 class="pn-card__title">{{ $t('painel.ficha.dadosEnvio') }}</h2>
             <dl class="dd-dados">
@@ -324,11 +399,12 @@
 <script setup>
 import { ref, reactive, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { useQuasar } from 'quasar'
+import { useQuasar, copyToClipboard } from 'quasar'
 import { useI18n } from 'vue-i18n'
 import BrandIcon from '@/components/ui/BrandIcon.vue'
 import DiagResumo from '@/components/DiagResumo.vue'
 import FotoSlot from '@/components/FotoSlot.vue'
+import EstrelasNota from '@/components/EstrelasNota.vue'
 import { supabase } from '@/config/supabase.js'
 import { useAuthStore } from '@/stores/auth.js'
 import { useFotos } from '@/composables/useFotos.js'
@@ -350,6 +426,7 @@ import {
   locales
 } from '@/data/diagnostico.js'
 import { linkWhatsapp } from '@/utils/whatsapp.js'
+import { linkDaAvaliacao } from '@/config/site.js'
 
 const $q = useQuasar()
 const { t, locale } = useI18n()
@@ -367,6 +444,7 @@ const responsavel = ref(null)
 const barbeiros = ref([])
 
 const fotos = useFotos(() => diag.value, { painel: true })
+const avaliacao = ref(null)
 
 const visor = reactive({ aberto: false, lista: [], indice: 0, atual: null })
 
@@ -419,6 +497,39 @@ const linkCliente = computed(() => {
   )
 })
 
+/** Link de avaliação ligado a este diagnóstico (pelo slug de quem atende). */
+const linkAvaliacao = computed(() => {
+  const slugBarbeiro = diag.value?.barbeiro?.slug
+  return slugBarbeiro ? linkDaAvaliacao(slugBarbeiro, diag.value.id) : ''
+})
+
+/** Pedido de avaliação no idioma do cliente, como a mensagem do WhatsApp. */
+const linkPedirAvaliacao = computed(() => {
+  if (!linkAvaliacao.value || !diag.value?.whatsapp) return ''
+  return linkWhatsapp(
+    diag.value.whatsapp,
+    t(
+      'painel.aval.waPedido',
+      { nome: diag.value.nome.split(' ')[0], link: linkAvaliacao.value },
+      { locale: diag.value.idioma || 'pt-BR' }
+    )
+  )
+})
+
+async function copiarLinkAvaliacao() {
+  await copyToClipboard(linkAvaliacao.value)
+  $q.notify({ type: 'positive', message: t('painel.form.linkCopiado') })
+}
+
+async function carregarAvaliacao() {
+  const { data } = await supabase
+    .from('avaliacoes')
+    .select('id, nota, nps, comentario, respostas, criado_em')
+    .eq('diagnostico_id', route.params.id)
+    .maybeSingle()
+  avaliacao.value = data || null
+}
+
 const opcoesBarbeiro = computed(() =>
   barbeiros.value.map(b => ({ label: b.nome || b.email, value: b.id }))
 )
@@ -443,7 +554,7 @@ async function carregar() {
   try {
     const { data, error } = await supabase
       .from('diagnosticos')
-      .select('*, barbeiro:perfis(nome)')
+      .select('*, barbeiro:perfis(nome, slug)')
       .eq('id', route.params.id)
       .maybeSingle()
     if (error) throw error
@@ -470,7 +581,7 @@ async function atualizar(campos, mensagem) {
     .from('diagnosticos')
     .update(campos)
     .eq('id', diag.value.id)
-    .select('*, barbeiro:perfis(nome)')
+    .select('*, barbeiro:perfis(nome, slug)')
     .single()
   if (error) {
     $q.notify({ type: 'negative', message: t('painel.comum.erroSalvar') })
@@ -481,12 +592,36 @@ async function atualizar(campos, mensagem) {
   return true
 }
 
-function mudarStatus(id) {
+async function mudarStatus(id) {
   if (diag.value.status === id) return
-  atualizar(
+  const ok = await atualizar(
     { status: id },
-    t('painel.ficha.statusMudou', { status: t(statusPorId[id].key) })
+    id === 'concluido' && !avaliacao.value && linkPedirAvaliacao.value
+      ? ''
+      : t('painel.ficha.statusMudou', { status: t(statusPorId[id].key) })
   )
+  // Atendimento concluído é a hora de pedir a avaliação.
+  if (
+    ok &&
+    id === 'concluido' &&
+    !avaliacao.value &&
+    linkPedirAvaliacao.value
+  ) {
+    $q.notify({
+      type: 'positive',
+      timeout: 9000,
+      message: t('painel.aval.concluidoPedir'),
+      actions: [
+        {
+          label: t('painel.aval.pedirAgora'),
+          color: 'white',
+          noCaps: true,
+          handler: () =>
+            window.open(linkPedirAvaliacao.value, '_blank', 'noopener')
+        }
+      ]
+    })
+  }
 }
 
 async function salvarNotas() {
@@ -668,6 +803,7 @@ function apagar() {
 
 onMounted(async () => {
   window.addEventListener('keydown', teclas)
+  carregarAvaliacao().catch(() => {})
   await carregar()
   if (auth.ehAdmin) {
     const { data } = await supabase
@@ -861,6 +997,40 @@ onBeforeUnmount(() => window.removeEventListener('keydown', teclas))
 }
 .dd-apagar {
   justify-self: start;
+}
+.dd-aval__nota {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+}
+.dd-aval__nps {
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  background: var(--mv-surface-2);
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--mv-muted);
+}
+.dd-aval__com {
+  margin: 0.6rem 0 0;
+  line-height: 1.55;
+  color: var(--mv-ink);
+  white-space: pre-line;
+}
+.dd-aval__quando {
+  margin: 0.75rem 0 0;
+  font-size: 0.8rem;
+  color: var(--mv-faint);
+}
+.dd-aval__txt {
+  margin-bottom: 0.75rem;
+  font-size: 0.88rem;
+}
+.dd-aval__acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
 .dd-visor {

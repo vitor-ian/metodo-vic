@@ -6,11 +6,12 @@ painel para o Max/equipe (admin) e para os barbeiros visagistas.
 
 ## Como funciona
 
-| Quem                 | Onde                              | O que faz                                                                                                                                      |
-| -------------------- | --------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| Cliente              | `/diagnostico/<link-do-barbeiro>` | Passo 1: diagnóstico e resultado. Passo 2: as 6 fotos (frente, perfis, 45°, costas). Passo 3: referências (opcional).                          |
-| Barbeiro             | `/painel`                         | Vê e gerencia só os diagnósticos que chegaram pelo link dele: fotos, status, anotações, PDF, WhatsApp. Configura o link em **Meu formulário**. |
-| Admin (Max e equipe) | `/painel`                         | Vê todos os diagnósticos e todos os barbeiros; aprova, desativa, promove a admin, edita links e transfere diagnósticos.                        |
+| Quem                 | Onde                              | O que faz                                                                                                                                                                                                                                               |
+| -------------------- | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Cliente              | `/diagnostico/<link-do-barbeiro>` | Passo 1: diagnóstico e resultado. Passo 2: as 6 fotos (frente, perfis, 45°, costas), tiradas na hora pela câmera guiada ou da galeria. Passo 3: referências (opcional).                                                                                 |
+| Cliente              | `/avaliacao/<link-do-barbeiro>`   | Depois do atendimento: nota de 1 a 5, recomendação de 0 a 10, comentário e as perguntas do barbeiro. Com `?d=<id>` fica ligada ao diagnóstico.                                                                                                          |
+| Barbeiro             | `/painel`                         | Vê e gerencia só os diagnósticos que chegaram pelo link dele: fotos, status, anotações, PDF, WhatsApp. Configura o link em **Meu formulário**; em **Avaliações** copia o link de avaliação, cria perguntas e vê as métricas (média, NPS, distribuição). |
+| Admin (Max e equipe) | `/painel`                         | Vê todos os diagnósticos e todos os barbeiros; aprova, desativa, promove a admin, edita links e transfere diagnósticos.                                                                                                                                 |
 
 Formulário, login e painel funcionam em português, inglês e espanhol (seletor
 de idioma no topo do formulário/login e no menu do painel). Os textos ficam em
@@ -29,7 +30,9 @@ npm run dev
 
 ## Supabase (projeto `metodo-vic`, ref `bfwzmkrdyngmmgiwbzcs`)
 
-A migration de `supabase/migrations/` já está aplicada e há um admin
+A migration inicial de `supabase/migrations/` já está aplicada. A de avaliações
+(`20261115120000_avaliacoes.sql`) precisa ser rodada no SQL Editor antes do
+deploy que inclui a tela de avaliações. Há um admin
 (`vitor.ian@nairo.com.br`). Para promover outra conta a admin pelo SQL Editor:
 
 ```sql

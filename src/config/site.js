@@ -17,3 +17,12 @@ export const BUCKET = 'diagnosticos'
 export function linkDoFormulario(slug) {
   return `${SITE_URL}/diagnostico/${slug}`
 }
+
+/**
+ * Link da avaliação pós-atendimento. Com o id do diagnóstico, a avaliação fica
+ * ligada ao cliente (e ele só avalia uma vez).
+ */
+export function linkDaAvaliacao(slug, diagnosticoId = '') {
+  const base = `${SITE_URL}/avaliacao/${slug}`
+  return diagnosticoId ? `${base}?d=${diagnosticoId}` : base
+}

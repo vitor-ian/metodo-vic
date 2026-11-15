@@ -21,6 +21,35 @@ export const diagEscuta = [
 ]
 
 /**
+ * Respostas de um toque para algumas perguntas da escuta: no celular, digitar
+ * oito respostas cansa. O toque acrescenta o texto (ou tira, se já estiver
+ * lá) e a pessoa completa com as próprias palavras. Em `substituir`, a
+ * pergunta pede uma palavra só, então o toque troca a resposta.
+ */
+export const diagEscutaSugestoes = {
+  'diag.e1': {
+    chaves: ['diag.sE1a', 'diag.sE1b', 'diag.sE1c', 'diag.sE1d', 'diag.sE1e']
+  },
+  'diag.e2': {
+    chaves: [
+      'diag.sE2a',
+      'diag.sE2b',
+      'diag.sE2c',
+      'diag.sE2d',
+      'diag.sE2e',
+      'diag.sE2f'
+    ]
+  },
+  'diag.e3': {
+    chaves: ['diag.sE3a', 'diag.sE3b', 'diag.sE3c', 'diag.sE3d']
+  },
+  'diag.e8': {
+    chaves: ['diag.sE8a', 'diag.sE8b', 'diag.sE8c', 'diag.sE8d', 'diag.sE8e'],
+    substituir: true
+  }
+}
+
+/**
  * Etapa 2 — 12 perguntas de tendência comportamental.
  *
  * `letras` é a tendência de cada alternativa, na ordem em que ela aparece na
@@ -164,31 +193,46 @@ export const locales = [
 
 /**
  * Passo 2 — as seis fotos da consultoria. O `id` é o nome do arquivo no
- * bucket (<id>.jpg) e a imagem é o guia de enquadramento de cada ângulo.
+ * bucket (<id>.jpg), a imagem é o guia de enquadramento de cada ângulo e a
+ * instrução é o que a câmera guiada mostra na hora de tirar.
  */
 export const diagAngulos = [
-  { id: 'frente', img: '/img/angulos/frente.webp', nameKey: 'envio.angFrente' },
+  {
+    id: 'frente',
+    img: '/img/angulos/frente.webp',
+    nameKey: 'envio.angFrente',
+    instrKey: 'envio.instrFrente'
+  },
   {
     id: 'perfil-direito',
     img: '/img/angulos/perfil-direito.webp',
-    nameKey: 'envio.angPerfilDireito'
+    nameKey: 'envio.angPerfilDireito',
+    instrKey: 'envio.instrPerfilDireito'
   },
   {
     id: 'perfil-esquerdo',
     img: '/img/angulos/perfil-esquerdo.webp',
-    nameKey: 'envio.angPerfilEsquerdo'
+    nameKey: 'envio.angPerfilEsquerdo',
+    instrKey: 'envio.instrPerfilEsquerdo'
   },
   {
     id: '45-esquerdo',
     img: '/img/angulos/45-esquerdo.webp',
-    nameKey: 'envio.ang45Esquerdo'
+    nameKey: 'envio.ang45Esquerdo',
+    instrKey: 'envio.instr45Esquerdo'
   },
   {
     id: '45-direito',
     img: '/img/angulos/45-direito.webp',
-    nameKey: 'envio.ang45Direito'
+    nameKey: 'envio.ang45Direito',
+    instrKey: 'envio.instr45Direito'
   },
-  { id: 'costas', img: '/img/angulos/costas.webp', nameKey: 'envio.angCostas' }
+  {
+    id: 'costas',
+    img: '/img/angulos/costas.webp',
+    nameKey: 'envio.angCostas',
+    instrKey: 'envio.instrCostas'
+  }
 ]
 
 /** Orientações do passo 2, na ordem em que aparecem. */

@@ -124,6 +124,11 @@ const itens = computed(() => [
     label: 'painel.menu.diagnosticos',
     icon: 'assignment_ind'
   },
+  {
+    to: '/painel/avaliacoes',
+    label: 'painel.menu.avaliacoes',
+    icon: 'star_rate'
+  },
   { to: '/painel/formulario', label: 'painel.menu.formulario', icon: 'link' },
   ...(auth.ehAdmin
     ? [

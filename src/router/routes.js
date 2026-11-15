@@ -2,6 +2,8 @@
  * Três áreas:
  *  - /diagnostico/:slug — o formulário do cliente, pelo link do barbeiro.
  *    Público, sem cabeçalho do painel.
+ *  - /avaliacao/:slug — a avaliação pós-atendimento, mandada à parte depois
+ *    do atendimento (com `?d=<id>` quando sai da ficha do diagnóstico).
  *  - /entrar, /cadastro, /recuperar-senha, /redefinir-senha — acesso.
  *  - /painel — barbeiro vê os próprios diagnósticos; admin vê todos e
  *    gerencia os barbeiros (`meta.admin`).
@@ -12,6 +14,11 @@ const routes = [
   {
     path: '/diagnostico/:slug',
     component: () => import('@/pages/DiagnosticoPage.vue')
+  },
+
+  {
+    path: '/avaliacao/:slug',
+    component: () => import('@/pages/AvaliacaoPage.vue')
   },
 
   {
@@ -59,6 +66,11 @@ const routes = [
         path: 'formulario',
         name: 'formulario',
         component: () => import('@/pages/painel/FormularioPage.vue')
+      },
+      {
+        path: 'avaliacoes',
+        name: 'avaliacoes',
+        component: () => import('@/pages/painel/AvaliacoesPage.vue')
       },
       {
         path: 'barbeiros',

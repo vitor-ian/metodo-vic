@@ -1,5 +1,14 @@
 <template>
-  <div class="slot" :class="[`slot--${estado}`, { 'slot--add': adicionar }]">
+  <div
+    class="slot"
+    :class="[
+      `slot--${estado}`,
+      {
+        'slot--add': adicionar,
+        'slot--proxima': destaque && estado === 'vazio'
+      }
+    ]"
+  >
     <button
       type="button"
       class="slot__area"
@@ -54,7 +63,7 @@
         v-if="(url || estado === 'ok') && estado !== 'enviando'"
         class="slot__acoes"
       >
-        <button type="button" class="slot__link" @click="abrir">
+        <button type="button" class="slot__link" @click="trocar">
           {{ $t('envio.fotoTrocar') }}
         </button>
         <button
@@ -68,6 +77,32 @@
         </button>
       </span>
     </div>
+
+    <!-- Com câmera: tocar pergunta de onde vem a foto. -->
+    <q-menu
+      v-if="camera"
+      v-model="menu"
+      no-parent-event
+      anchor="bottom middle"
+      self="top middle"
+      :offset="[0, 6]"
+      class="slot-menu"
+    >
+      <q-list style="min-width: 220px">
+        <q-item v-close-popup clickable @click="$emit('camera')">
+          <q-item-section avatar>
+            <q-icon name="photo_camera" color="primary" />
+          </q-item-section>
+          <q-item-section>{{ $t('envio.fotoCamera') }}</q-item-section>
+        </q-item>
+        <q-item v-close-popup clickable @click="abrir">
+          <q-item-section avatar>
+            <q-icon name="photo_library" color="primary" />
+          </q-item-section>
+          <q-item-section>{{ $t('envio.fotoGaleria') }}</q-item-section>
+        </q-item>
+      </q-list>
+    </q-menu>
 
     <input
       ref="entrada"
@@ -87,8 +122,10 @@ import { ref } from 'vue'
 
 /**
  * Um espaço de foto. Vazio, mostra o guia do ângulo; depois do envio, a foto.
- * Sem `capture` no input de propósito: a pessoa escolhe entre a câmera e a
- * galeria (muita gente já tirou as fotos com outra pessoa segurando).
+ * Sem `capture` no input de propósito: a galeria precisa continuar aberta
+ * (muita gente já tirou as fotos com outra pessoa segurando). Com `camera`,
+ * tocar abre um menu: tirar agora (a câmera guiada, que o pai abre pelo
+ * evento `camera`) ou escolher da galeria.
  */
 const props = defineProps({
   label: { type: String, required: true },
@@ -101,19 +138,28 @@ const props = defineProps({
   visualizar: { type: Boolean, default: false },
   // Variante "adicionar mais" das referências.
   adicionar: { type: Boolean, default: false },
-  multiplo: { type: Boolean, default: false }
+  multiplo: { type: Boolean, default: false },
+  camera: { type: Boolean, default: false },
+  // A próxima foto que falta: ganha um contorno para guiar o olho.
+  destaque: { type: Boolean, default: false }
 })
 
-const emit = defineEmits(['arquivos', 'remover', 'ver'])
+const emit = defineEmits(['arquivos', 'remover', 'ver', 'camera'])
 const entrada = ref(null)
+const menu = ref(false)
 
 function abrir() {
   entrada.value?.click()
 }
 
+function trocar() {
+  if (props.camera) menu.value = true
+  else abrir()
+}
+
 function clicou() {
   if (props.visualizar && props.url && props.estado === 'ok') emit('ver')
-  else abrir()
+  else trocar()
 }
 
 function escolheu(evento) {
@@ -154,6 +200,11 @@ function escolheu(evento) {
   outline: none;
 }
 .slot__area:focus-visible {
+  box-shadow: 0 0 0 3px var(--mv-accent-tint);
+}
+.slot--proxima .slot__area {
+  border-style: solid;
+  border-color: var(--mv-hl);
   box-shadow: 0 0 0 3px var(--mv-accent-tint);
 }
 .slot--ok .slot__area {

@@ -117,6 +117,15 @@
         <p class="mv-kicker">{{ $t('diag.s1Kicker') }}</p>
         <h2 class="mv-display mv-h3 diag__title">{{ $t('diag.s1Title') }}</h2>
         <p class="mv-body diag__lead">{{ $t('diag.s1Sub') }}</p>
+        <p class="diag__minutes diag__respondidas">
+          <q-icon name="edit_note" size="16px" />
+          {{
+            $t('diag.respondidas', {
+              n: respondidas,
+              total: diagEscuta.length
+            })
+          }}
+        </p>
 
         <!-- Todas as oito são obrigatórias: a escuta ativa é o que o barbeiro
              lê antes do atendimento, e meia escuta não serve de nada. -->
@@ -143,6 +152,27 @@
                 :placeholder="$t('diag.answerHint')"
                 input-style="max-height: 140px"
               />
+              <div
+                v-if="diagEscutaSugestoes[chave]"
+                class="diag__sug"
+                :aria-label="$t('diag.sugestoes')"
+              >
+                <button
+                  v-for="sk in diagEscutaSugestoes[chave].chaves"
+                  :key="sk"
+                  type="button"
+                  class="diag__sug-b"
+                  :class="{ 'diag__sug-b--on': temSugestao(i, sk) }"
+                  :aria-pressed="temSugestao(i, sk)"
+                  @click="alternarSugestao(i, chave, sk)"
+                >
+                  <q-icon
+                    :name="temSugestao(i, sk) ? 'check' : 'add'"
+                    size="14px"
+                  />
+                  {{ $t(sk) }}
+                </button>
+              </div>
             </div>
           </div>
 
@@ -400,6 +430,31 @@
           </li>
         </ul>
 
+        <!-- O caminho mais fácil primeiro: tirar agora, um ângulo por vez,
+             com a moldura e o exemplo na tela. -->
+        <div v-if="!fotos.completas.value" class="diag__cam">
+          <span class="diag__cam-ic">
+            <q-icon name="photo_camera" size="26px" />
+          </span>
+          <div>
+            <strong>{{ $t('envio.camCtaTitulo') }}</strong>
+            <p>{{ $t('envio.camCtaTexto') }}</p>
+          </div>
+          <q-btn
+            unelevated
+            no-caps
+            class="mv-cta diag__cam-btn"
+            @click="abrirCamera()"
+          >
+            <span>{{
+              fotos.enviadas.value
+                ? $t('envio.camCtaContinuar')
+                : $t('envio.camCtaBtn')
+            }}</span>
+            <q-icon name="arrow_forward" size="20px" />
+          </q-btn>
+        </div>
+
         <p class="diag__hint">{{ $t('envio.p2Grid') }}</p>
 
         <div class="diag__fotos">
@@ -410,9 +465,20 @@
             :guia="ang.img"
             :url="fotos.angulos[ang.id].url"
             :estado="fotos.angulos[ang.id].estado"
+            :destaque="ang.id === proximoAngulo"
+            camera
+            @camera="abrirCamera(ang.id)"
             @arquivos="arq => fotos.enviarAngulo(ang.id, arq[0])"
           />
         </div>
+
+        <CameraGuiada
+          v-model="camera.aberta"
+          :angulos="angulosCamera"
+          :inicio="camera.inicio"
+          :feitos="angulosFeitos"
+          @foto="(id, arq) => fotos.enviarAngulo(id, arq)"
+        />
 
         <p class="diag__count diag__count--fotos">
           {{
@@ -601,15 +667,17 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted } from 'vue'
+import { ref, reactive, computed, watch, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import BrandIcon from '@/components/ui/BrandIcon.vue'
 import LanguageSwitcher from '@/components/LanguageSwitcher.vue'
 import DiagResumo from '@/components/DiagResumo.vue'
 import FotoSlot from '@/components/FotoSlot.vue'
+import CameraGuiada from '@/components/CameraGuiada.vue'
 import {
   diagEscuta,
+  diagEscutaSugestoes,
   diagQuestions,
   diagAlternativas,
   diagPerfis,
@@ -666,6 +734,7 @@ const erroFinalizar = ref(false)
 const gerandoPdf = ref(false)
 const erroPdf = ref(false)
 let fotosCarregadas = false
+const camera = reactive({ aberta: false, inicio: '' })
 
 const agenda = [
   { title: 'diag.agenda1', text: 'diag.agenda1Text' },
@@ -698,6 +767,63 @@ const PASSOS = {
 const passo = computed(() => PASSOS[tela.value] || 0)
 
 const ultima = computed(() => atual.value === diagQuestions.length - 1)
+
+const respondidas = computed(
+  () => escuta.filter(r => String(r || '').trim()).length
+)
+
+/** A sugestão já está na resposta? (sem diferenciar maiúsculas) */
+function temSugestao(i, chaveSug) {
+  const texto = t(chaveSug).toLowerCase()
+  return String(escuta[i] || '')
+    .toLowerCase()
+    .split(/\s*[,;\n]\s*/)
+    .includes(texto)
+}
+
+/** Acrescenta a sugestão à resposta, ou tira se ela já estiver lá. */
+function alternarSugestao(i, chavePergunta, chaveSug) {
+  const texto = t(chaveSug)
+  if (diagEscutaSugestoes[chavePergunta].substituir) {
+    escuta[i] = temSugestao(i, chaveSug) ? '' : texto
+    return
+  }
+  const partes = String(escuta[i] || '')
+    .split(/\s*,\s*/)
+    .map(p => p.trim())
+    .filter(Boolean)
+  const j = partes.findIndex(p => p.toLowerCase() === texto.toLowerCase())
+  if (j >= 0) partes.splice(j, 1)
+  else partes.push(texto)
+  escuta[i] = partes.join(', ')
+}
+
+/** Ângulos com foto (enviada ou subindo): a câmera pula estes. */
+const angulosFeitos = computed(() =>
+  diagAngulos
+    .filter(a => ['ok', 'enviando'].includes(fotos.angulos[a.id].estado))
+    .map(a => a.id)
+)
+/** O primeiro que falta: ganha destaque na grade. */
+const proximoAngulo = computed(
+  () =>
+    diagAngulos.find(a =>
+      ['vazio', 'erro'].includes(fotos.angulos[a.id].estado)
+    )?.id || ''
+)
+const angulosCamera = computed(() =>
+  diagAngulos.map(a => ({
+    id: a.id,
+    label: t(a.nameKey),
+    img: a.img,
+    instrucao: t(a.instrKey)
+  }))
+)
+
+function abrirCamera(id = '') {
+  camera.inicio = id
+  camera.aberta = true
+}
 const progresso = computed(() => (atual.value / diagQuestions.length) * 100)
 
 const nomeBarbeiro = computed(() => barbeiro.value?.nome || 'Método VIC')
@@ -1188,6 +1314,44 @@ onMounted(async () => {
   color: var(--mv-hl);
 }
 
+.diag__respondidas {
+  margin-top: 0.75rem;
+}
+.diag__sug {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+}
+.diag__sug-b {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  min-height: 34px;
+  padding: 0.3rem 0.75rem;
+  border: 1px solid var(--mv-line-strong);
+  border-radius: 999px;
+  background: var(--mv-bg);
+  font-family: inherit;
+  font-size: 0.84rem;
+  color: var(--mv-muted);
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    background 0.15s,
+    color 0.15s;
+}
+.diag__sug-b:hover {
+  border-color: var(--mv-hl);
+  color: var(--mv-ink);
+}
+.diag__sug-b--on {
+  border-color: var(--mv-hl);
+  background: var(--mv-accent-tint);
+  color: var(--mv-green-deep);
+  font-weight: 600;
+}
+
 /* ---- questionário ---- */
 .diag__count {
   margin: 0 0 0.6rem;
@@ -1494,6 +1658,41 @@ onMounted(async () => {
   flex-shrink: 0;
   color: var(--mv-hl);
 }
+.diag__cam {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.4rem 1rem;
+  align-items: start;
+  margin-top: 1.25rem;
+  padding: 1.25rem;
+  border-radius: 14px;
+  background: #0a0a0a;
+  color: #fff;
+}
+.diag__cam-ic {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--mv-green);
+}
+.diag__cam strong {
+  font-family: var(--font-heavy);
+  font-weight: 800;
+  font-size: 1.05rem;
+}
+.diag__cam p {
+  margin: 0.2rem 0 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.72);
+}
+.diag__cam-btn {
+  grid-column: 1 / -1;
+  justify-self: start;
+  margin-top: 0.6rem;
+}
 .diag__fotos {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1552,7 +1751,8 @@ onMounted(async () => {
 
 @media (max-width: 480px) {
   .diag__actions .mv-cta,
-  .diag__next-btn {
+  .diag__next-btn,
+  .diag__cam-btn {
     width: 100%;
   }
   .diag__nav .mv-cta {

@@ -185,7 +185,29 @@ export default {
     waTitle: 'Consultoría Visagista — Método VIC',
     waName: 'Nombre',
     waDate: 'Fecha',
-    waLead: 'Predominante'
+    waLead: 'Predominante',
+    respondidas: '{n} de {total} respondidas',
+    sugestoes: 'Respuestas sugeridas',
+    sE1a: 'Quiero cambiar de look',
+    sE1b: 'Un nuevo momento profesional',
+    sE1c: 'Mejorar mi autoestima',
+    sE1d: 'No sé qué me queda bien',
+    sE1e: 'Me lo recomendaron',
+    sE2a: 'Confianza',
+    sE2b: 'Profesionalismo',
+    sE2c: 'Modernidad',
+    sE2d: 'Autoridad',
+    sE2e: 'Ligereza',
+    sE2f: 'Elegancia',
+    sE3a: 'Un corte que vaya con mi rostro',
+    sE3b: 'Practicidad en el día a día',
+    sE3c: 'Aprender a cuidar el cabello y la barba',
+    sE3d: 'Sentirme más seguro',
+    sE8a: 'Esencial',
+    sE8b: 'Confianza',
+    sE8c: 'Identidad',
+    sE8d: 'Autoestima',
+    sE8e: 'Respeto'
   },
   envio: {
     passo1: 'Diagnóstico',
@@ -209,7 +231,8 @@ export default {
     regra3: 'No puedes estar sin camisa',
     regra4: 'Preferiblemente blusa negra y lisa',
     regra5: 'Fondo neutro',
-    p2Grid: 'Una foto para cada ángulo. La imagen gris muestra el encuadre.',
+    p2Grid:
+      'Una foto para cada ángulo. Toca un espacio para sacarla ahora o elegirla de la galería. La imagen gris muestra el encuadre.',
     angFrente: 'Frente',
     angPerfilDireito: 'Perfil derecho',
     angPerfilEsquerdo: 'Perfil izquierdo',
@@ -255,7 +278,89 @@ export default {
     agenda5: 'Referencia',
     agenda5Text: 'Opcional: un corte o barba que admiras.',
     minutes: 'Toma unos 10 minutos. Ten tus fotos a mano.',
-    fromBarber: 'Mensaje de {nome}'
+    fromBarber: 'Mensaje de {nome}',
+    fotoCamera: 'Sacar foto ahora',
+    fotoGaleria: 'Elegir de la galería',
+    camCtaTitulo: 'Saca las fotos ahora, paso a paso',
+    camCtaTexto:
+      'La cámara muestra el encuadre y el ejemplo de cada ángulo y pasa sola al siguiente. ¿Estás solo? Apoya el móvil y usa el temporizador.',
+    camCtaBtn: 'Abrir la cámara',
+    camCtaContinuar: 'Seguir con la cámara',
+    camPasso: 'Foto {n} de {total}',
+    camLigando: 'Abriendo la cámara...',
+    camNegadaTitulo: 'Sin permiso para la cámara',
+    camNegadaTexto:
+      'Permite la cámara para este sitio en la configuración del navegador, o usa la cámara del propio móvil.',
+    camIndisponivelTitulo: 'La cámara no se abre aquí',
+    camIndisponivelTexto:
+      'Este navegador no abre la cámara dentro de la página. Usa la cámara del móvil o elige una foto de la galería.',
+    camNativa: 'Usar la cámara del móvil',
+    camGaleria: 'Elegir de la galería',
+    camTentar: 'Intentar de nuevo',
+    camDicaSozinho:
+      'Solo: apoya el móvil a la altura del rostro, a un brazo de distancia. El temporizador avisa con pitidos.',
+    camDicaAjuda:
+      'Con ayuda: la otra persona sostiene el móvil a la altura de tu rostro.',
+    camRefazer: 'Repetir',
+    camUsar: 'Usar esta foto',
+    camUsarProxima: 'Usar e ir a la siguiente',
+    camTimer: 'Temporizador',
+    camSemTimer: 'Sin temporizador',
+    camCancelar: 'Cancelar cuenta atrás',
+    camTirar: 'Sacar foto',
+    camVirar: 'Cambiar de cámara',
+    camVirarCurto: 'Girar',
+    instrFrente:
+      'Mira directo a la cámara, con el rostro relajado. Hombros dentro del marco.',
+    instrPerfilDireito:
+      'Gira de lado hacia tu izquierda hasta que solo se vea el lado derecho del rostro. Mira al frente.',
+    instrPerfilEsquerdo:
+      'Gira de lado hacia tu derecha hasta que solo se vea el lado izquierdo del rostro. Mira al frente.',
+    instr45Esquerdo:
+      'Gira a medio camino hacia tu derecha: se ven el rostro y el lado izquierdo.',
+    instr45Direito:
+      'Gira a medio camino hacia tu izquierda: se ven el rostro y el lado derecho.',
+    instrCostas:
+      'Ponte de espaldas a la cámara, mostrando la nuca y el cabello de atrás.'
+  },
+  aval: {
+    metaTitle: "Valoración {'|'} Método VIC",
+    offTitle: 'Valoración no disponible',
+    offText:
+      'Este enlace no existe o fue pausado por el profesional. Confirma la dirección con quien te lo envió.',
+    jaTitle: 'Valoración enviada',
+    jaText: '¡Gracias! {nome} ya recibió tu valoración.',
+    outra: 'Enviar otra valoración',
+    kicker: 'Valoración · {nome}',
+    titulo: '¿Cómo fue tu atención?',
+    tituloNome: '{nome}, ¿cómo fue tu atención?',
+    lead: 'Lleva menos de un minuto. Tu opinión ayuda a mejorar cada atención.',
+    notaPergunta: '¿Qué nota le das a la atención?',
+    toque: 'Toca las estrellas',
+    nota1: 'Muy mala',
+    nota2: 'Mala',
+    nota3: 'Regular',
+    nota4: 'Buena',
+    nota5: 'Excelente',
+    npsPergunta: 'Del 0 al 10, ¿cuánto recomendarías a {nome} a un amigo?',
+    npsMin: 'Nada probable',
+    npsMax: 'Seguro que sí',
+    sim: 'Sí',
+    nao: 'No',
+    respostaHint: 'Escribe aquí (opcional)',
+    comentarioBom: '¿Quieres dejar un comentario?',
+    comentarioRuim: '¿Qué podemos mejorar?',
+    comentarioHint: 'Opcional',
+    nomeLabel: 'Tu nombre (opcional)',
+    nomeDica: 'Para que el profesional sepa de quién es la valoración.',
+    enviar: 'Enviar valoración',
+    erroMuitos:
+      'Demasiadas valoraciones ahora. Inténtalo de nuevo en unos minutos.',
+    erroEnviar: 'No se pudo enviar. Revisa la conexión e inténtalo de nuevo.',
+    obrigadoKicker: 'Valoración enviada',
+    obrigadoTitle: '¡Gracias!',
+    obrigadoText: '{nome} recibió tu valoración. Marca la diferencia.',
+    instagram: 'Etiquetar a {insta} en Instagram'
   },
   painel: {
     titulo: 'Panel · Método VIC',
@@ -341,6 +446,7 @@ export default {
         'Si recibiste un enlace de formulario, confirma la dirección con quien te lo envió.'
     },
     menu: {
+      avaliacoes: 'Valoraciones',
       abrir: 'Abrir menú',
       inicio: 'Inicio',
       nav: 'Panel',
@@ -536,6 +642,100 @@ export default {
         '{nome} ya no podrá ingresar al panel y el enlace del formulario deja de recibir respuestas. Los diagnósticos se conservan.',
       desativado: 'Acceso desactivado.',
       atualizados: 'Datos actualizados.'
+    },
+    aval: {
+      kicker: 'Después de la atención',
+      titulo: 'Valoraciones',
+      sub: 'Después de la atención, envía el enlace de valoración al cliente. Las respuestas se convierten en métricas aquí.',
+      seuLink: 'Tu enlace de valoración',
+      recebendo: 'Recibiendo valoraciones',
+      pausado:
+        'Valoraciones pausadas — el enlace muestra que no está disponible',
+      dicaFicha:
+        'En la ficha de cada diagnóstico, el botón “Pedir valoración” envía un enlace vinculado a ese cliente, directo a su WhatsApp.',
+      semLink:
+        'Crea tu enlace en Mi formulario: la valoración usa la misma dirección.',
+      msgCompartilhar:
+        '¡Hola! Gracias por la visita. ¿Puedes valorar tu atención? Lleva menos de un minuto: {link}',
+      abaResultados: 'Resultados',
+      abaPerguntas: 'Preguntas',
+      p30: '30 días',
+      p90: '90 días',
+      p365: '12 meses',
+      pTudo: 'Todo',
+      vazioTitulo: 'Ninguna valoración en este periodo',
+      vazioTexto:
+        'Envía el enlace a los clientes después de la atención. Las respuestas aparecen aquí.',
+      total: 'Valoraciones',
+      media: 'Nota media',
+      nps: 'NPS',
+      npsAjuda:
+        'Net Promoter Score: % de promotores (9 y 10) menos % de detractores (0 a 6). Va de −100 a +100.',
+      cincoEstrelas: 'Dieron 5 estrellas',
+      faixaExcelencia: 'Excelente',
+      faixaQualidade: 'Muy bueno',
+      faixaAperfeicoar: 'Puede mejorar',
+      faixaCritica: 'Crítico',
+      distribuicao: 'Distribución de notas',
+      tipDist: '{n} valoraciones con {nota} estrellas · {pct}',
+      recomendacao: 'Recomendación (0 a 10)',
+      detratores: 'Detractores',
+      neutros: 'Neutros',
+      promotores: 'Promotores',
+      npsBase: 'Base: {n} respuestas.',
+      semNps: 'Nadie respondió la recomendación en este periodo.',
+      suasPerguntas: 'Tus preguntas',
+      respostasN: '{n} respuestas',
+      removida: 'pregunta eliminada',
+      maisNaLista: '+{n} en la lista de abajo',
+      todas: 'Todas las valoraciones',
+      fTodas: 'Todas',
+      fComentario: 'Con comentario',
+      fBaixas: 'Notas 1 a 3',
+      recomenda: 'Recomendación {n}/10',
+      apagar: 'Borrar valoración',
+      anonimo: 'Cliente sin nombre',
+      verMais: 'Ver más',
+      erroCarregar: 'No se pudieron cargar las valoraciones.',
+      apagarTitulo: '¿Borrar valoración?',
+      apagarTexto: 'Sale de la lista y de las métricas. No se puede deshacer.',
+      fixasTitulo: 'Preguntas fijas',
+      fixasSub:
+        'Toda valoración tiene estas tres. Solo la nota es obligatoria para el cliente.',
+      obrigatoria: 'Obligatoria',
+      suasSub:
+        'Añade hasta 10 preguntas. Aparecen después de la nota, en este orden, y son opcionales para el cliente.',
+      perguntaHint: 'Escribe la pregunta',
+      perguntaCurta: 'Escribe la pregunta (al menos 3 caracteres).',
+      tipoNota: 'Nota de 1 a 5',
+      tipoSimNao: 'Sí o no',
+      tipoTexto: 'Respuesta escrita',
+      subir: 'Subir',
+      descer: 'Bajar',
+      nenhumaPergunta:
+        'Ninguna pregunta extra. Usa una sugerencia o crea la tuya.',
+      adicionar: 'Añadir pregunta',
+      sugestoes: 'Sugerencias (toca para añadir)',
+      sug1: '¿El resultado fue lo que esperabas?',
+      sug2: '¿Cómo valoras la puntualidad?',
+      sug3: '¿Cómo valoras el espacio?',
+      sug4: '¿Cuánto te sentiste escuchado?',
+      sug5: '¿Volverías a atenderte conmigo?',
+      sug6: '¿Qué fue lo que más te marcó de la atención?',
+      verComoCliente: 'Ver como el cliente',
+      fichaTitulo: 'Valoración del cliente',
+      fichaPedir:
+        'Después de la atención, pide la valoración: el enlace ya va vinculado a este cliente.',
+      pedirWhats: 'Pedir valoración',
+      copiarLinkCliente: 'Copiar enlace',
+      fichaSemLink:
+        'Configura tu enlace en Mi formulario para pedir valoraciones.',
+      recebidaEm: 'Recibida el {data}',
+      waPedido:
+        '¡Hola, {nome}! Gracias por la visita. ¿Me cuentas cómo fue tu atención? Lleva menos de un minuto: {link}',
+      concluidoPedir:
+        'Atención concluida. ¿Por qué no pides la valoración ahora?',
+      pedirAgora: 'Pedir valoración'
     }
   }
 }
