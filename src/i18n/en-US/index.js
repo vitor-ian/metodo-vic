@@ -323,6 +323,23 @@ export default {
     instrCostas:
       'Turn your back to the camera, showing your nape and the back of your hair.'
   },
+  pdf: {
+    titulo: 'Visagism diagnosis',
+    consultoria: 'Consultation with {nome}',
+    whatsapp: 'WhatsApp',
+    pagina: 'Page {n} of {total}',
+    resumoPerfil: 'Leading profile',
+    resumoEstilo: 'Desired style',
+    resumoAtend: 'Appointment',
+    reflexao: 'To reflect on',
+    fotos: 'Consultation photos',
+    fotosSub: '{n} of {total} angles sent',
+    pendente: 'Pending',
+    enviada: 'Sent',
+    referencias: 'References',
+    semRefs: 'The client sent no references.',
+    obsRef: "Client's comment"
+  },
   aval: {
     metaTitle: "Feedback {'|'} VIC Method",
     offTitle: 'Feedback unavailable',

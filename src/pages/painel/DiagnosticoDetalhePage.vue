@@ -746,24 +746,31 @@ async function baixarFoto(foto) {
 async function baixarPdf() {
   gerandoPdf.value = true
   try {
-    const placar = diag.value.placar || {}
-    const maior = Math.max(
-      ...['D', 'I', 'S', 'C'].map(k => Number(placar[k]) || 0)
-    )
     await baixar({
       nome: diag.value.nome,
       data: new Date(`${diag.value.data_diagnostico}T00:00`).toLocaleDateString(
         locale.value
       ),
-      placar: { D: 0, I: 0, S: 0, C: 0, ...placar },
-      maior,
+      barbeiro: diag.value.barbeiro?.nome || '',
+      whatsapp: diag.value.whatsapp,
+      placar: { D: 0, I: 0, S: 0, C: 0, ...diag.value.placar },
       total: diagQuestions.length,
-      predominantes: (diag.value.predominantes || [])
-        .map(k => t(diagPerfis[k].nameKey))
-        .join(', '),
+      predominantes: diag.value.predominantes || [],
       escuta: escutaAlinhada.value,
       estilo: estiloObj.value,
-      atendimento: atendimentoNome.value
+      atendimento: atendimentoNome.value,
+      reflexao: false,
+      // URLs assinadas (1 h) que a ficha já carregou.
+      fotos: diagAngulos.map(a => ({
+        label: t(a.nameKey),
+        url: fotos.angulos[a.id].url,
+        estado: fotos.angulos[a.id].estado
+      })),
+      referencias: fotos.refsProntas.value.map(r => ({
+        url: r.url,
+        estado: r.estado
+      })),
+      refObs: diag.value.referencia_obs
     })
   } catch {
     $q.notify({ type: 'negative', message: t('painel.ficha.erroPdf') })

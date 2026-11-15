@@ -321,6 +321,23 @@ export default {
     instrCostas:
       'Fique de costas para a câmera, mostrando a nuca e o cabelo atrás.'
   },
+  pdf: {
+    titulo: 'Diagnóstico visagista',
+    consultoria: 'Consultoria com {nome}',
+    whatsapp: 'WhatsApp',
+    pagina: 'Página {n} de {total}',
+    resumoPerfil: 'Perfil predominante',
+    resumoEstilo: 'Estilo desejado',
+    resumoAtend: 'Atendimento',
+    reflexao: 'Para refletir',
+    fotos: 'Fotos da consultoria',
+    fotosSub: '{n} de {total} ângulos enviados',
+    pendente: 'Pendente',
+    enviada: 'Enviada',
+    referencias: 'Referências',
+    semRefs: 'O cliente não enviou referências.',
+    obsRef: 'Comentário do cliente'
+  },
   aval: {
     metaTitle: "Avaliação {'|'} Método VIC",
     offTitle: 'Avaliação indisponível',

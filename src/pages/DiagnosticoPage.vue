@@ -680,7 +680,6 @@ import {
   diagEscutaSugestoes,
   diagQuestions,
   diagAlternativas,
-  diagPerfis,
   diagEstilos,
   diagAtendimento,
   diagAngulos,
@@ -704,7 +703,6 @@ const {
   estilo,
   atendimento,
   placar,
-  maiorPlacar,
   predominantes,
   estiloEscolhido,
   atendimentoEscolhido,
@@ -989,20 +987,38 @@ async function baixarPdf() {
   gerandoPdf.value = true
   erroPdf.value = false
   try {
+    // Fotos e referências entram quando já há alguma: no resultado (antes
+    // do passo 2) o PDF é só o diagnóstico.
+    const temEnvio =
+      fotos.enviadas.value > 0 || fotos.referencias.value.length > 0
     await baixar({
       nome: form.nome.trim(),
       data: dataFormatada.value,
+      barbeiro: barbeiro.value?.nome || '',
+      whatsapp: form.whatsapp.trim(),
       placar: placar.value,
-      maior: maiorPlacar.value,
       total: diagQuestions.length,
-      predominantes: predominantes.value
-        .map(k => t(diagPerfis[k].nameKey))
-        .join(', '),
+      predominantes: predominantes.value,
       escuta,
       estilo: estiloEscolhido.value,
       atendimento: atendimentoEscolhido.value
         ? t(atendimentoEscolhido.value.nameKey)
-        : ''
+        : '',
+      reflexao: true,
+      ...(temEnvio
+        ? {
+            fotos: diagAngulos.map(a => ({
+              label: t(a.nameKey),
+              url: fotos.angulos[a.id].url,
+              estado: fotos.angulos[a.id].estado
+            })),
+            referencias: fotos.refsProntas.value.map(r => ({
+              url: r.url,
+              estado: r.estado
+            })),
+            refObs: envio.refObs
+          }
+        : {})
     })
   } catch {
     erroPdf.value = true
@@ -1021,7 +1037,7 @@ function recomecar() {
 const TELAS_POS_ENVIO = ['resultado', 'fotos', 'referencia', 'fim']
 watch(tela, async nova => {
   if (envio.id && TELAS_POS_ENVIO.includes(nova)) envio.tela = nova
-  if ((nova === 'fotos' || nova === 'referencia') && !fotosCarregadas) {
+  if (['fotos', 'referencia', 'fim'].includes(nova) && !fotosCarregadas) {
     fotosCarregadas = true
     await fotos.carregar().catch(() => (fotosCarregadas = false))
   }
